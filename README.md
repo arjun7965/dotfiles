@@ -48,8 +48,10 @@ These steps move the directories into `~/.config`.
 
 Quick checks:
 
-   ls -ld ~/.config/nvim ~/.config/tmux
-   ls -l ~/.tmux.conf
+```bash
+ls -ld ~/.config/nvim ~/.config/tmux
+ls -l ~/.tmux.conf
+```
 
 ## Optional: keep repo as source of truth (symlink instead of move)
 
