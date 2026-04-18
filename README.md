@@ -11,11 +11,12 @@ This repository keeps `nvim` and `tmux` at the repo root (not inside `.config`) 
 
 These steps move the directories into `~/.config`.
 
-1. Clone the repo
+1. Clone the repo (any path works — the examples below use `$DOTFILES`)
 
    ```bash
    git clone <your-repo-url> ~/dotfiles
    cd ~/dotfiles
+   export DOTFILES="$PWD"
    ```
 
 2. Create `~/.config` if needed
@@ -34,8 +35,8 @@ These steps move the directories into `~/.config`.
 4. Move configs from repo into `~/.config`
 
    ```bash
-   mv ~/dotfiles/nvim ~/.config/nvim
-   mv ~/dotfiles/tmux ~/.config/tmux
+   mv "$DOTFILES/nvim" ~/.config/nvim
+   mv "$DOTFILES/tmux" ~/.config/tmux
    ```
 
 5. Ensure tmux loads this config via `~/.tmux.conf`
@@ -67,13 +68,20 @@ ls -l ~/.tmux.conf
 
 ## Optional: keep repo as source of truth (symlink instead of move)
 
-If you want to keep the repo directories in place and avoid moving them, use symlinks instead:
+If you want to keep the repo directories in place and avoid moving them, use symlinks instead. Set `DOTFILES` to your clone path first — `ln -sfn` does not validate the target, so a wrong path produces a dangling link that silently fails.
 
 ```bash
+export DOTFILES="$PWD"   # run from inside your clone, or set it explicitly
 mkdir -p ~/.config
-ln -sfn ~/dotfiles/nvim ~/.config/nvim
-ln -sfn ~/dotfiles/tmux ~/.config/tmux
+ln -sfn "$DOTFILES/nvim" ~/.config/nvim
+ln -sfn "$DOTFILES/tmux" ~/.config/tmux
 ln -sfn ~/.config/tmux/tmux.conf ~/.tmux.conf
+```
+
+Verify the links resolve (no `cannot access` errors):
+
+```bash
+ls ~/.config/nvim/init.lua ~/.config/tmux/tmux.conf ~/.tmux.conf
 ```
 
 This approach makes future `git pull` updates immediately reflect in your active config.
