@@ -32,6 +32,10 @@ These need to be on `PATH` before Neovim starts (or on first plugin sync).
 - `fd` — faster backend for Telescope `find_files`
 - A Nerd Font + a true-color terminal — `nvim-web-devicons`, `lualine`, and `bufferline` render glyph icons
 
+**tmux bindings that shell out:**
+
+- `lazygit` — `Prefix + g` opens a popup running `lazygit` (`tmux/utility.conf`)
+
 ## Install after cloning
 
 These steps move the directories into `~/.config`.
