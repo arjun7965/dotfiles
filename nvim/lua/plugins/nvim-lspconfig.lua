@@ -75,10 +75,6 @@ local config = function()
 	vim.lsp.config['clangd'] = {
 		capabilities = capabilities,
 		on_attach = on_attach,
-		cmd = {
-			"/apps/tools/llvm-17/bin/clangd",
-			"--offset-encoding=utf-16",
-		},
 	}
 
 	-- local luacheck = require("efmls-configs.linters.luacheck")

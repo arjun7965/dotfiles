@@ -11,7 +11,6 @@ return {
 			},
 		},
         registries = {
-            -- "/shared/home/avinod/src/mason-registry",
             "github:mason-org/mason-registry"
         },
 	},
