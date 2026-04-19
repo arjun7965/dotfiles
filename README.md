@@ -7,6 +7,31 @@ This repository keeps `nvim` and `tmux` at the repo root (not inside `.config`) 
 - `nvim/` -> Neovim config directory
 - `tmux/` -> tmux config directory
 
+## Dependencies
+
+These need to be on `PATH` before Neovim starts (or on first plugin sync).
+
+**Required — Neovim will not fully bootstrap without these:**
+
+- `git` — lazy.nvim clones itself and every plugin on first run
+- `make` and a C compiler (`gcc` or `clang`) — plugin `build` steps (`telescope-fzf-native`, `LuaSnip`) and `:TSUpdate` for tree-sitter parsers
+
+**Required for core workflows:**
+
+- `ripgrep` — backs Telescope's `live_grep`, `grep_string`, and `find_files` (`--hidden --no-ignore-vcs` flags)
+- `node` ≥ 18 — `copilot.vim` runtime; also required by Mason to install `pyright` and `bashls`
+- `curl` (or `wget`), `unzip`, `tar`, `gzip` — used by Mason to fetch LSP servers
+
+**Required for the active `efm` formatters/linters (C/C++):**
+
+- `clang-format`
+- `cpplint` (`pip install cpplint`)
+
+**Recommended:**
+
+- `fd` — faster backend for Telescope `find_files`
+- A Nerd Font + a true-color terminal — `nvim-web-devicons`, `lualine`, and `bufferline` render glyph icons
+
 ## Install after cloning
 
 These steps move the directories into `~/.config`.
