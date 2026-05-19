@@ -38,7 +38,7 @@ These need to be on `PATH` before Neovim starts (or on first plugin sync).
 
 ## One-command bootstrap
 
-Run this from the repo root:
+After cloning, run this from the repo root — it handles backups, symlinks, and verification automatically:
 
 ```bash
 ./scripts/bootstrap-symlinks.sh
@@ -50,6 +50,8 @@ Optional: override the source path explicitly (must be absolute):
 DOTFILES="/absolute/path/to/dotfiles" ./scripts/bootstrap-symlinks.sh
 ```
 
+This replaces the manual steps below. Use the manual steps only if you need finer control.
+
 ## Install after cloning (recommended: symlink model)
 
 Use symlinks so `~/.config` remains the live location while real files stay in your clone.
@@ -57,8 +59,8 @@ Use symlinks so `~/.config` remains the live location while real files stay in y
 1. Clone the repo and set an absolute source path
 
    ```bash
-   git clone <your-repo-url> ~/dotfiles
-   cd ~/dotfiles
+   git clone <your-repo-url> ~/src/dotfiles
+   cd ~/src/dotfiles
    export DOTFILES="$PWD"
    ```
 
@@ -125,11 +127,14 @@ ls ~/.config/nvim/init.lua ~/.config/tmux/tmux.conf ~/.tmux.conf
 
 ## Alternative: move-based install
 
-If you prefer moving files into `~/.config`, use this variant.
+If you prefer moving files into `~/.config` (no symlinks), use this variant. Set `DOTFILES` to your clone path first.
 
 ```bash
+export DOTFILES="/absolute/path/to/your/clone"
 mkdir -p ~/.config
 mv "$DOTFILES/nvim" ~/.config/nvim
 mv "$DOTFILES/tmux" ~/.config/tmux
 ln -sfn ~/.config/tmux/tmux.conf ~/.tmux.conf
 ```
+
+Note: with this approach, `git pull` updates will not automatically reflect in `~/.config` — you would need to copy files again after each pull.
