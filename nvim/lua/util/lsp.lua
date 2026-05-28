@@ -1,33 +1,24 @@
-local mapkey = require("util.keymapper").mapvimkey
-
 local M = {}
 
 M.on_attach = function(client, bufnr)
-	local opts = { noremap = true, silent = true, buffer = bufnr }
-
-	mapkey("<leader>fd", "Lspsaga finder", "n", opts) -- go to definition
-	mapkey("<leader>gd", "Lspsaga peek_definition", "n", opts) -- peak definition
-	mapkey("<leader>gD", "Lspsaga goto_definition", "n", opts) -- go to definition
-	mapkey("<leader>gS", "vsplit | Lspsaga goto_definition", "n", opts) -- go to definition
-	mapkey("<leader>ca", "Lspsaga code_action", "n", opts) -- see available code actions
-	mapkey("<leader>rn", "Lspsaga rename", "n", opts) -- smart rename
-	mapkey("<leader>D", "Lspsaga show_line_diagnostics", "n", opts) -- show  diagnostics for line
-	mapkey("<leader>d", "Lspsaga show_cursor_diagnostics", "n", opts) -- show diagnostics for cursor
-	mapkey("<leader>pd", "Lspsaga diagnostic_jump_prev", "n", opts) -- jump to prev diagnostic in buffer
-	mapkey("<leader>nd", "Lspsaga diagnostic_jump_next", "n", opts) -- jump to next diagnostic in buffer
-	mapkey("<leader>gi", "Lspsaga finder imp", "n", opts) -- implementation
-
-	mapkey("K", "Lspsaga hover_doc", "n", opts) -- show documentation for what is under cursor
-
-	if client.name == "pyright" then
-		mapkey("<leader>oi", "PyrightOrganizeImports", "n", opts) -- organise imports
-		mapkey("<leader>db", "DapToggleBreakpoint", "n", opts) -- toggle breakpoint
-		mapkey("<leader>dr", "DapContinue", "n", opts) -- continue/invoke debugger
-		mapkey("<leader>dt", "lua require('dap-python').test_method()", "n", opts) -- run tests
+	local opts = function(desc)
+		return { noremap = true, silent = true, buffer = bufnr, desc = desc }
 	end
 
-	if client.name == "ts_ls" then
-		mapkey("<leader>oi", "TypeScriptOrganizeImports", "n", opts) -- organise imports
+	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts("Go to definition"))
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts("Go to declaration"))
+	vim.keymap.set("n", "gr", vim.lsp.buf.references, opts("Find references"))
+	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts("Go to implementation"))
+	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts("Hover documentation"))
+	vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts("Code action"))
+	vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts("Rename symbol"))
+	vim.keymap.set("n", "<leader>D", vim.diagnostic.open_float, opts("Line diagnostics"))
+	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts("Previous diagnostic"))
+	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts("Next diagnostic"))
+	vim.keymap.set("n", "<leader>q", "<cmd>cclose<CR>", opts("Close quickfix"))
+
+	if client.name == "pyright" then
+		vim.keymap.set("n", "<leader>oi", "<cmd>PyrightOrganizeImports<CR>", opts("Organise imports"))
 	end
 end
 
