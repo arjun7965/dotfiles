@@ -148,6 +148,8 @@ local config = function()
 			},
 		},
 	}
+
+	vim.lsp.enable({ 'lua_ls', 'jsonls', 'pyright', 'bashls', 'clangd', 'efm' })
 end
 
 return {
