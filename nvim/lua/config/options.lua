@@ -27,6 +27,7 @@ opt.cursorline = true
 
 -- Behavior
 opt.hidden = true
+opt.updatetime = 300
 opt.errorbells = false
 opt.swapfile = false
 opt.backup = false

@@ -13,6 +13,26 @@
 -- 	end,
 -- })
 
+-- auto-reload files changed outside nvim
+vim.opt.autoread = true
+local autoread_group = vim.api.nvim_create_augroup("AutoReadGroup", {})
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI", "TermClose", "TermLeave" }, {
+	group = autoread_group,
+	pattern = "*",
+	callback = function()
+		if vim.fn.mode() ~= "c" and vim.fn.getcmdwintype() == "" then
+			vim.cmd("checktime")
+		end
+	end,
+})
+vim.api.nvim_create_autocmd("FileChangedShellPost", {
+	group = autoread_group,
+	pattern = "*",
+	callback = function()
+		vim.notify("File reloaded (changed on disk)", vim.log.levels.INFO)
+	end,
+})
+
 -- highlight on yank
 local highlight_yank_group = vim.api.nvim_create_augroup("HighlightYankGroup", {})
 vim.api.nvim_create_autocmd("TextYankPost", {
