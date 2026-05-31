@@ -29,7 +29,7 @@ These need to be on `PATH` before Neovim starts (or on first plugin sync).
 
 **Recommended:**
 
-- `fd` — faster backend for Telescope `find_files`
+- `fd` — gitignore-aware file-finder backend for Telescope `find_files` (nicer defaults than the built-in `find`; comparable in speed to ripgrep, which it shares a traversal engine with)
 - A Nerd Font + a true-color terminal — `nvim-web-devicons`, `lualine`, and `bufferline` render glyph icons
 
 **tmux bindings that shell out:**
