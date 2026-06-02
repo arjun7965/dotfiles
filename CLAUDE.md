@@ -4,14 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository purpose
 
-Personal dotfiles for Neovim and tmux. There is no build, lint, or test tooling — changes are validated by reloading the target tool:
+Personal dotfiles for Neovim, tmux, and bash. There is no build, lint, or test tooling — changes are validated by reloading the target tool:
 
 - Neovim: reopen `nvim` (or `:Lazy sync` after changing a plugin spec).
 - tmux: `tmux source-file ~/.tmux.conf` in an active session, or `Prefix + r` (prefix is `C-a`).
+- bash: `source ~/.bashrc` or open a new shell.
 
 ## Installation model (important)
 
-`nvim/` and `tmux/` live at the repo root, **not** under `.config/`, so users can choose between moving or symlinking into `~/.config` (see README.md). When editing configs, remember that the "live" paths on a configured machine are `~/.config/nvim` and `~/.config/tmux`, and `~/.tmux.conf` is a symlink to `~/.config/tmux/tmux.conf`. Cross-file `source` directives in tmux use the `~/.config/tmux/...` path (see `tmux/tmux.conf:100-103`), so preserve those absolute locations when refactoring.
+`nvim/`, `tmux/`, and `bash/` live at the repo root, **not** under `.config/`, so users can choose between moving or symlinking into `~/.config` (see README.md). When editing configs, remember that the "live" paths on a configured machine are `~/.config/nvim`, `~/.config/tmux`, and `~/.config/bash`, and `~/.tmux.conf` is a symlink to `~/.config/tmux/tmux.conf`. Cross-file `source` directives in tmux use the `~/.config/tmux/...` path (see `tmux/tmux.conf:100-103`), so preserve those absolute locations when refactoring.
+
+## bash architecture
+
+`bash/bash-powerline.sh` is a pure-bash powerline-style prompt vendored from [riobard/bash-powerline](https://github.com/riobard/bash-powerline) (kept as a flat file, **not** a git submodule, so it can be edited freely). It is opt-in: `~/.bashrc` must `source ~/.config/bash/bash-powerline.sh` as its **last** prompt-related line, because it installs `ps1` via `PROMPT_COMMAND` and overwrites `PS1` on every prompt (this replaces the stock xterm window-title `PS1`). The git segment is built from `git status --porcelain --branch`, parsing the `## branch...upstream [ahead N, behind M]` line for the `↑`/`↓` markers. The bootstrap script only symlinks `~/.config/bash`; it does not edit `~/.bashrc` (it just prints the source line to add).
 
 ## Neovim architecture
 

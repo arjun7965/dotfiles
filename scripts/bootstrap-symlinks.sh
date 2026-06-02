@@ -52,6 +52,10 @@ ensure_link "$DOTFILES/nvim" "$HOME/.config/nvim"
 ensure_link "$DOTFILES/tmux" "$HOME/.config/tmux"
 ensure_link "$HOME/.config/tmux/tmux.conf" "$HOME/.tmux.conf"
 
+if [[ -d "$DOTFILES/bash" ]]; then
+  ensure_link "$DOTFILES/bash" "$HOME/.config/bash"
+fi
+
 echo ""
 echo "Verification checks:"
 ls -ld "$HOME/.config/nvim" "$HOME/.config/tmux"
@@ -68,4 +72,15 @@ else
   echo "tmux reload: skipped (tmux not installed)"
 fi
 
+if [[ -d "$DOTFILES/bash" ]]; then
+  echo ""
+  if grep -q 'config/bash/bash-powerline.sh' "$HOME/.bashrc" 2>/dev/null; then
+    echo "bash prompt: already sourced from ~/.bashrc"
+  else
+    echo "bash prompt: add this line to the end of ~/.bashrc to enable it:"
+    echo '  [ -f ~/.config/bash/bash-powerline.sh ] && source ~/.config/bash/bash-powerline.sh'
+  fi
+fi
+
+echo ""
 echo "Done. Edit configs in $DOTFILES and changes apply via symlinks."

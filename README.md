@@ -6,6 +6,7 @@ This repository keeps `nvim` and `tmux` at the repo root (not inside `.config`) 
 
 - `nvim/` -> Neovim config directory
 - `tmux/` -> tmux config directory
+- `bash/` -> bash prompt (pure-bash powerline-style prompt with git status)
 
 ## Dependencies
 
@@ -98,10 +99,37 @@ Use symlinks so `~/.config` remains the live location while real files stay in y
    tmux source-file ~/.tmux.conf
    ```
 
+## bash prompt
+
+A self-contained, pure-bash powerline-style prompt
+(vendored from [riobard/bash-powerline](https://github.com/riobard/bash-powerline) —
+no Python, no daemon, no dependency beyond `git`). To the right of the cwd it shows:
+
+- `⑂<branch>` — current branch (or tag/short-hash when detached)
+- `*` — working tree has uncommitted changes
+- `↑N` — local is N commits **ahead** of upstream (you need to push)
+- `↓N` — upstream is N commits ahead (**origin ahead**; you need to pull)
+
+The trailing `$` turns green on success and red when the last command exited non-zero.
+
+The bootstrap script symlinks `~/.config/bash` -> `bash/`. To enable the prompt,
+add this line to the **end** of `~/.bashrc` (after any existing `PS1` setup, since
+it takes over the prompt via `PROMPT_COMMAND`):
+
+```bash
+[ -f ~/.config/bash/bash-powerline.sh ] && source ~/.config/bash/bash-powerline.sh
+```
+
+Then `source ~/.bashrc` (or open a new shell). Customize by exporting any
+`COLOR_*` / `SYMBOL_*` / `PS_SYMBOL` variable before that line, or set
+`POWERLINE_GIT=0` to disable git info. Note: because the prompt is rebuilt every
+command via `PROMPT_COMMAND`, it replaces the stock xterm window-title `PS1`.
+
 ## Verify setup
 
 - `~/.config/nvim` is a symlink to your clone
 - `~/.config/tmux` is a symlink to your clone
+- `~/.config/bash` is a symlink to your clone (and `~/.bashrc` sources `bash-powerline.sh`)
 - `~/.tmux.conf` points to `~/.config/tmux/tmux.conf`
 
 Quick checks:
