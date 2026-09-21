@@ -22,8 +22,17 @@ Entry point: `nvim/init.lua` → `lua/config/init.lua`.
 - `lua/config/globals.lua` sets `<leader>` and `<localleader>` to space — keymaps everywhere assume this.
 - `lua/util/` — shared helpers (`lsp.on_attach`, `icons.diagnostic_signs`, `keymapper`) consumed by plugin specs; edit here when multiple plugins need the same behavior.
 - `lua/plugins/disabled.lua` — convention for plugins kept around but turned off.
-- LSP servers are configured via `vim.lsp.config[...]` in `lua/plugins/nvim-lspconfig.lua`, with `efm` wiring formatters/linters per filetype through `efmls-configs-nvim`. Mason handles server installation (`mason.lua`, `mason-lspconfig.lua`).
-- `nvim/lazy-lock.json` is the pinned plugin manifest — commit it alongside spec changes. `nvim/parser/` holds committed tree-sitter parsers.
+- LSP servers are configured via `vim.lsp.config[...]` in `lua/plugins/nvim-lspconfig.lua`, with `efm` wiring formatters/linters per filetype through `efmls-configs-nvim`. Mason installs the binaries, but `mason-lspconfig.nvim` is disabled in `disabled.lua`, so nothing auto-installs — add servers by hand via `:MasonInstall` (the efm package is named `efm`, not `efm-langserver`). `clangd` is not from Mason; its `cmd` is hardcoded to `/apps/tools/llvm-17/bin/clangd`.
+- `nvim/lazy-lock.json` is the pinned plugin manifest — commit it alongside spec changes. `nvim/parser/` holds committed tree-sitter parsers. On a fresh clone use `:Lazy restore` to honor the pins; `:Lazy sync` updates plugins and rewrites the lockfile.
+
+### Known gotchas
+
+- **Requires Neovim 0.11+.** `vim.lsp.config` and `vim.lsp.enable` do not exist in 0.10 — the LSP spec errors at startup on anything older.
+- LSP servers only attach inside a project root (`.git` or a language marker). On a loose file they silently don't start and only `efm` attaches, which looks like a broken server but isn't.
+- `efm`'s `settings.languages` references linters/formatters whose `require` lines are commented out just above it, so those names are `nil` and each list collapses to an empty table. Only `c`/`cpp` actually run anything; lua/python/sh/json/markdown/JS-TS format and lint nothing.
+- `options.lua` sets `foldexpr = "nvim_treesitter#foldexpr()"` while `nvim-treesitter` is disabled in `disabled.lua`. `foldlevel = 99` hides it on open, but a fold recompute raises `E117`. `nvim/parser/` and `nvim-treesitter.lua` are dead weight for the same reason.
+- `lualine-nvim.lua` has `theme = auto` — a bare nil global, not the string `"auto"`. It works only because lualine defaults to `auto` when the key is absent.
+- `guicursor` in `options.lua` spells out a `t:` clause on purpose: an `a:`-only value replaces the whole option and silently drops nvim's default terminal-mode cursor.
 
 ## tmux architecture
 
