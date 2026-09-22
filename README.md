@@ -67,11 +67,61 @@ Use symlinks so `~/.config` remains the live location while real files stay in y
    tmux source-file ~/.tmux.conf
    ```
 
+## Fonts (required — icons render blank without this)
+
+The Neovim config uses Nerd Font glyphs for diagnostic signs, file-type icons, the
+dashboard and the statusline. Without a Nerd Font selected **in your terminal**,
+all of them render as blank cells or boxes. Nothing in this repo can fix that; the
+font is the terminal's, not Neovim's.
+
+1. Install a Nerd Font (user-local, no `sudo`)
+
+   ```bash
+   mkdir -p ~/.local/share/fonts
+   cd /tmp
+   curl -sSLO https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+   unzip -o JetBrainsMono.zip \
+     'JetBrainsMonoNerdFont-Regular.ttf' 'JetBrainsMonoNerdFont-Bold.ttf' \
+     'JetBrainsMonoNerdFont-Italic.ttf'  'JetBrainsMonoNerdFont-BoldItalic.ttf' \
+     -d ~/.local/share/fonts/
+   fc-cache -f ~/.local/share/fonts
+   ```
+
+   The archive also ships `Mono`, `Propo` and `NL` variants and unpacks to ~240 MB;
+   the four files above are all a terminal needs (~10 MB).
+
+2. Add a symbols font for the non-Nerd glyphs
+
+   Nerd Fonts only patch the Private Use Areas. Symbols in real Unicode blocks are
+   not included — notably `U+23F5` (`⏵`), which Claude Code uses in its mode
+   indicator. `Noto Sans Symbols 2` covers that block:
+
+   ```bash
+   sudo apt install fonts-noto-core   # or extract only NotoSansSymbols2-Regular.ttf
+   fc-cache -f
+   ```
+
+3. Point your terminal at the font
+
+   For Terminator, in `~/.config/terminator/config` under `[[default]]`:
+
+   ```
+   font = JetBrainsMono Nerd Font 11
+   use_system_font = False
+   ```
+
+   **Terminator reads this once, at process start.** A new tab or window is handed
+   to the existing process over DBus and keeps the old font, so editing the file is
+   not enough — either quit Terminator entirely and relaunch (`terminator --no-dbus &`
+   forces an independent process), or set the font via Preferences → Profiles →
+   General, which applies live to the running window.
+
 ## Verify setup
 
 - `~/.config/nvim` is a symlink to your clone
 - `~/.config/tmux` is a symlink to your clone
 - `~/.tmux.conf` points to `~/.config/tmux/tmux.conf`
+- A Nerd Font is installed **and loaded by the running terminal**
 
 Quick checks:
 
@@ -79,7 +129,16 @@ Quick checks:
 ls -ld ~/.config/nvim ~/.config/tmux
 ls -l ~/.tmux.conf
 ls ~/.config/nvim/init.lua ~/.config/tmux/tmux.conf ~/.tmux.conf
+
+# fonts: is a Nerd Font installed, and does the running terminal actually use it?
+fc-list | grep -c -i nerd
+grep -c JetBrainsMono /proc/$(pgrep -u "$USER" -f 'x-terminal-emul|terminator' | head -1)/maps
 ```
+
+Both counts must be non-zero. The second is the one that matters — a font can be
+installed and still not loaded by the terminal you are sitting in. To check a single
+glyph's coverage use `fc-list ':charset=f15b'`; do not use `fc-match`, which returns
+the requested family whether or not it has the glyph.
 
 ## Daily workflow
 

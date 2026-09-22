@@ -30,9 +30,10 @@ Entry point: `nvim/init.lua` → `lua/config/init.lua`.
 - **Requires Neovim 0.11+.** `vim.lsp.config` and `vim.lsp.enable` do not exist in 0.10 — the LSP spec errors at startup on anything older.
 - LSP servers only attach inside a project root (`.git` or a language marker). On a loose file they silently don't start and only `efm` attaches, which looks like a broken server but isn't.
 - `efm`'s `settings.languages` references linters/formatters whose `require` lines are commented out just above it, so those names are `nil` and each list collapses to an empty table. Only `c`/`cpp` actually run anything; lua/python/sh/json/markdown/JS-TS format and lint nothing.
-- `options.lua` sets `foldexpr = "nvim_treesitter#foldexpr()"` while `nvim-treesitter` is disabled in `disabled.lua`. `foldlevel = 99` hides it on open, but a fold recompute raises `E117`. `nvim/parser/` and `nvim-treesitter.lua` are dead weight for the same reason.
+- `options.lua` sets `foldmethod = "expr"` with `foldexpr = "nvim_treesitter#foldexpr()"` while `nvim-treesitter` is disabled in `disabled.lua`, so that function does not exist (`exists("*nvim_treesitter#foldexpr")` is 0). Calling it directly raises `E117`, but nvim swallows the failed `foldexpr` during redraw — no error surfaces and folding is simply inert. `nvim/parser/` (9 committed `.so` files) and `nvim-treesitter.lua` are dead weight for the same reason.
 - `lualine-nvim.lua` has `theme = auto` — a bare nil global, not the string `"auto"`. It works only because lualine defaults to `auto` when the key is absent.
 - `guicursor` in `options.lua` spells out a `t:` clause on purpose: an `a:`-only value replaces the whole option and silently drops nvim's default terminal-mode cursor.
+- Icons in `lua/util/icons.lua` and the plugin specs need a **Nerd Font** in the terminal (see README). When editing icon glyphs, note Nerd Fonts v3 retired the old Material Design block at `U+F500-FD46` (moved to `U+F0001-F1AF0`) — a v2 codepoint renders blank in any current Nerd Font. Prefer Font Awesome codepoints (`U+F000-F2FF`), which did not move. Check coverage with `fc-list ':charset=<hex>'`; `fc-match` is not a coverage test, as it returns the requested family even when the glyph is absent.
 
 ## tmux architecture
 
