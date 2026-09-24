@@ -94,12 +94,22 @@ font is the terminal's, not Neovim's.
 
    Nerd Fonts only patch the Private Use Areas. Symbols in real Unicode blocks are
    not included — notably `U+23F5` (`⏵`), which Claude Code uses in its mode
-   indicator. `Noto Sans Symbols 2` covers that block:
+   indicator. `Noto Sans Symbols 2` covers that block.
+
+   No `sudo` needed — pull the one font out of the package and install it user-local
+   (the Aries FW VMs have no sudo as of 2026-09-23):
 
    ```bash
-   sudo apt install fonts-noto-core   # or extract only NotoSansSymbols2-Regular.ttf
-   fc-cache -f
+   cd /tmp && apt-get download fonts-noto-core
+   dpkg-deb -x fonts-noto-core_*.deb x/
+   cp x/usr/share/fonts/truetype/noto/NotoSansSymbols2-Regular.ttf ~/.local/share/fonts/
+   fc-cache -f ~/.local/share/fonts
+   rm -rf /tmp/x /tmp/fonts-noto-core_*.deb
    ```
+
+   Installing the whole `fonts-noto-core` package would add 268 font files
+   system-wide to get this one 642 KB file, so the extraction is preferable even
+   where you do have root.
 
 3. Point your terminal at the font
 
